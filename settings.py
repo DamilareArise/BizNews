@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "bootstrapform",
-    "BizNews.userApp"
+    "BizNews.userApp",
+    "BizNews.blogApp"
 ]
 
 MIDDLEWARE = [
