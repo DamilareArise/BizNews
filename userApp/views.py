@@ -18,8 +18,8 @@ class SignUpView(generic.CreateView):
 
 
 @login_required
-def profileView(request):
-    userid = request.user.id
+def profileView(request, userid):
+    
     profile = Profile.objects.get(user_id = userid)
     # print(profile.date_of_birth) 
 
@@ -38,11 +38,22 @@ def editProfileView(request, userid):
 
         if request.user.is_superuser:
             if generalForm.is_valid() and profileForm_admin.is_valid():
+
+                if profileForm_admin.cleaned_data['role'].lower() == 'staff':
+                    userObject.is_staff = True
+                    userObject.is_superuser = False
+                elif profileForm_admin.cleaned_data['role'].lower() == 'admin':
+                    userObject.is_staff = True
+                    userObject.is_superuser = True
+                else:
+                    userObject.is_staff = False
+                    userObject.is_superuser = False
+
                 generalForm.save()
                 profileForm_admin.save()
 
                 messages.success(request, 'Your profile was successfully updated!')
-                return redirect('profile')
+                return redirect('profile', userid)
             else:
                 return render(request, template_name='userApp/edit_profile.html', context={'generalForm':generalForm, 'profileForm': profileForm_admin})
         else:
@@ -51,7 +62,7 @@ def editProfileView(request, userid):
                 profileForm_user.save()
 
                 messages.success(request, 'Your profile was successfully updated!')
-                return redirect('profile')
+                return redirect('profile', userid)
             else:
                 return render(request, template_name='userApp/edit_profile.html', context={'generalForm':generalForm, 'profileForm':profileForm_user})
 
@@ -67,3 +78,24 @@ def editProfileView(request, userid):
         else:
             return render(request, template_name='userApp/edit_profile.html', context={'generalForm':generalForm, 'profileForm':profileForm_user})
 
+
+@login_required
+def allUserView(request):
+    alluser = Profile.objects.all() 
+    return render(request, template_name='userApp/alluser.html', context={'alluser': alluser})
+
+
+
+@login_required
+def deactivateUserView(request, userid):
+    user = User.objects.get(id = userid)
+    if user.is_active:
+       
+        User.objects.filter(id = userid).update(is_active = False)
+        messages.success(request, 'Deactivation succesfull')
+    else:
+        
+        User.objects.filter(id = userid).update(is_active = True)
+        messages.success(request, 'Activation succesfull')
+
+    return redirect('alluser')
