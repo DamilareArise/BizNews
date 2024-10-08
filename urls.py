@@ -18,12 +18,13 @@ from django.contrib import admin
 from django.urls import path, re_path, include
 from django.views.generic import TemplateView
 from BizNews.userApp.views import SignUpView
+from BizNews.blogApp.views import allPostView
 from django.contrib.staticfiles.urls import static, staticfiles_urlpatterns
 from . import settings
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path('', TemplateView.as_view(template_name = 'index.html'), name='home'),
+    path('', allPostView, name='home'),
     path('contact/', TemplateView.as_view(template_name = 'contact.html'), name='contact'),
     path('category/', TemplateView.as_view(template_name = 'category.html'), name='category'),
     path('single/', TemplateView.as_view(template_name = 'single.html'), name='single'),

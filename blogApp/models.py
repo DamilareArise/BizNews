@@ -44,7 +44,7 @@ class Like(models.Model):
         unique_together = ('blog', 'user')  # Ensures a user can only like a blog post once
 
     def __str__(self):
-        return f"{self.user.username} liked {self.blog.title}"
+        return f"{self.user.user.username} liked {self.blog.title}"
 
 
 class Comment(models.Model):
@@ -54,4 +54,4 @@ class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Comment by {self.user.username} on {self.blog.title}"
+        return f"Comment by {self.user.user.username} on {self.blog.title}"
