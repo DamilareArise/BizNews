@@ -27,7 +27,6 @@ urlpatterns = [
     path('', allPostView, name='home'),
     path('contact/', TemplateView.as_view(template_name = 'contact.html'), name='contact'),
     path('category/', TemplateView.as_view(template_name = 'category.html'), name='category'),
-    path('single/', TemplateView.as_view(template_name = 'single.html'), name='single'),
     re_path(r'^accounts/', include('django.contrib.auth.urls')),
     re_path(r'^accounts/signup/$', SignUpView.as_view(), name="signup"),
     re_path(r'^userApp/', include('BizNews.userApp.urls')),

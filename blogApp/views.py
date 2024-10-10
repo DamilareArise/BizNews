@@ -42,3 +42,10 @@ def createBlogView(request):
         form = BlogForm()
         return render(request, template_name='blogApp/create_blog.html', context={'blogForm':form}) 
 
+
+@login_required
+def displayBlogView(request, id):
+    blog = BlogInfo.objects.get(blog_id = id)
+    likes = blog.total_likes()
+    comments = blog.total_comments()
+    return render(request, template_name='blogApp/view_blog.html', context={'blog':blog, 'likes':likes, 'comments':comments}) 
