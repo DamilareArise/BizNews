@@ -1,7 +1,44 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import BlogInfo, Like, Comment
+from .forms import BlogForm
+from django.contrib import messages
+from BizNews.userApp.models import Profile
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def allPostView(request):
-    allPost = BlogInfo.objects.all()
-    return render(request, template_name='index.html', context={'allpost':allPost}) 
+    allPost = BlogInfo.objects.all() # [ (), () ]
+   
+    blog_data = [] # [{},{}]
+    for post in allPost:
+        blog_data.append(
+            {
+                'post': post,
+                'likes': post.total_likes(),
+                'comments': post.total_comments()
+            }
+        )
+
+    print(blog_data)
+
+    return render(request, template_name='index.html', context={'post_data':blog_data}) 
+
+@login_required
+def createBlogView(request):
+    if request.method == 'POST':
+        form = BlogForm(request.POST,  request.FILES)
+        if form.is_valid():
+            blogForm = form.save(commit=False)
+            author = Profile.objects.get(user_id = request.user.id)
+            blogForm.author = author
+            blogForm.save()
+
+            messages.success(request, 'Post created successfully')
+            return redirect('home')
+        else:
+            messages.error(request, 'Error creating a Post')
+            return render(request, template_name='blogApp/create_blog.html', context={'blogForm':form})
+    else:
+        form = BlogForm()
+        return render(request, template_name='blogApp/create_blog.html', context={'blogForm':form}) 
+

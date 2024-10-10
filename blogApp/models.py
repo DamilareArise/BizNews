@@ -21,14 +21,14 @@ class BlogInfo(models.Model):
     author = models.ForeignKey(Profile, on_delete=models.CASCADE)
     content = models.TextField()
     category = models.CharField(max_length=50, choices=category)
-    approved = models.BooleanField()
+    approved = models.BooleanField(null=True)
     image = models.ImageField(upload_to='blogImages/', null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def total_likes(self):
             return self.likes.count()
 
-    def total_comments(self):
+    def total_comments(self):   
             return self.comments.count()
 
     def __str__(self):
