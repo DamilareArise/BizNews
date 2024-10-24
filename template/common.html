@@ -115,6 +115,7 @@
                             <a href="{% url "password_change" %}" class="dropdown-item">Change password</a>
                             {% if request.user.is_staff %}
                             <a href="{% url "alluser" %}" class="dropdown-item"> All users </a>
+                            <a href="{% url "all-blog" %}" class="dropdown-item"> All blog </a>
                             {% endif %}
                         </div>
                     </div>

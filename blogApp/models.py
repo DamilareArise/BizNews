@@ -21,7 +21,7 @@ class BlogInfo(models.Model):
     author = models.ForeignKey(Profile, on_delete=models.CASCADE)
     content = models.TextField()
     category = models.CharField(max_length=50, choices=category)
-    approved = models.BooleanField(null=True)
+    approved = models.BooleanField(default=False)
     image = models.ImageField(upload_to='blogImages/', null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
