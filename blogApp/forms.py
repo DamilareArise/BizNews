@@ -1,5 +1,5 @@
 from django import forms
-from .models import BlogInfo
+from .models import BlogInfo, Comment
 
 
 
@@ -10,5 +10,13 @@ class BlogForm(forms.ModelForm):
             'title',
             'category',
             'image',
+            'content'
+        ]
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = [
             'content'
         ]

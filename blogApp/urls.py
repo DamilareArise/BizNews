@@ -7,5 +7,7 @@ urlpatterns = [
     path('delete-blog/<int:id>/', deleteBlogView, name='delete-blog'),
     path('edit-blog/<int:id>/',  editBlogView, name='edit-blog'),
     path('all-blog', allBlogView, name='all-blog'),
-    path('approve/<int:id>/', approveView, name='approve')
+    path('approve/<int:id>/', approveView, name='approve'),
+    path('like/<int:blog_id>/', likeView, name='like')
+
 ]

@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import BlogInfo, Like, Comment
-from .forms import BlogForm
+from .forms import BlogForm, CommentForm
 from django.contrib import messages
 from BizNews.userApp.models import Profile
 from django.contrib.auth.decorators import login_required
@@ -82,10 +82,35 @@ def createBlogView(request):
 
 @login_required
 def displayBlogView(request, id):
+    user = get_object_or_404(Profile, user_id = request.user.id)
     blog = BlogInfo.objects.get(blog_id = id)
     likes = blog.total_likes()
-    comments = blog.total_comments()
-    return render(request, template_name='blogApp/view_blog.html', context={'blog':blog, 'likes':likes, 'comments':comments}) 
+    noOfComments = blog.total_comments()
+    
+    all_comment = Comment.objects.filter(blog_id = id)
+    print(all_comment)
+
+
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            validform = form.save(commit=False)
+            validform.user = user
+            validform.blog = blog
+
+            validform.save()
+
+            messages.success(request, 'comment successfully')
+        else:
+            messages.error(request, 'error occured')
+        
+        return redirect('view-blog', id)
+
+
+    else:
+        form = CommentForm()
+
+    return render(request, template_name='blogApp/view_blog.html', context={'blog':blog, 'likes':likes, 'comments':noOfComments, 'commentForm':form, 'all_comment':all_comment}) 
 
 @login_required
 def deleteBlogView(request, id):
@@ -124,3 +149,30 @@ def approveView(request, id):
         BlogInfo.objects.filter(blog_id = id).update(approved = True)
 
     return redirect('all-blog')
+
+
+@login_required
+def likeView(request, blog_id):
+    blog = get_object_or_404(BlogInfo, blog_id = blog_id)
+    user = get_object_or_404(Profile, user_id = request.user.id)
+
+    exists = Like.objects.filter(user_id = request.user.id, blog_id = blog_id ).exists()
+    
+    if exists:
+        Like.objects.filter(user_id = request.user.id, blog_id = blog_id ).delete()
+    else:
+        Like.objects.create(user = user, blog = blog)
+
+    return redirect('view-blog', blog_id)
+
+
+@login_required
+def addCommentVIew(request, blog_id):
+    user = get_object_or_404(Profile, user_id = request.user.id)
+    blog = get_object_or_404(BlogInfo, blog_id = blog_id)
+    if request.method == 'POST':
+        pass
+
+    else:
+        form = CommentForm()
+        return render(request, template_name='blogApp/view_blog.html', context={'commentForm':form})
