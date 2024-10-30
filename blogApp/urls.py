@@ -8,6 +8,7 @@ urlpatterns = [
     path('edit-blog/<int:id>/',  editBlogView, name='edit-blog'),
     path('all-blog', allBlogView, name='all-blog'),
     path('approve/<int:id>/', approveView, name='approve'),
-    path('like/<int:blog_id>/', likeView, name='like')
+    path('like/<int:blog_id>/', likeView, name='like'),
+    path('add-comment/<int:blog_id>/', addCommentVIew, name='add-comment')
 
 ]
