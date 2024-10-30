@@ -88,7 +88,7 @@ def displayBlogView(request, id):
     noOfComments = blog.total_comments()
     
     all_comment = Comment.objects.filter(blog_id = id)
-    print(all_comment)
+    # print(all_comment)
 
 
     if request.method == 'POST':
@@ -151,6 +151,8 @@ def approveView(request, id):
     return redirect('all-blog')
 
 
+
+
 @login_required
 def likeView(request, blog_id):
     blog = get_object_or_404(BlogInfo, blog_id = blog_id)
@@ -170,9 +172,10 @@ def likeView(request, blog_id):
 def addCommentVIew(request, blog_id):
     user = get_object_or_404(Profile, user_id = request.user.id)
     blog = get_object_or_404(BlogInfo, blog_id = blog_id)
-    if request.method == 'POST':
-        pass
 
-    else:
-        form = CommentForm()
-        return render(request, template_name='blogApp/view_blog.html', context={'commentForm':form})
+    if request.method == 'POST':
+       content = request.POST['content']
+       Comment.objects.create(user = user, blog = blog, content = content)
+
+    return redirect('view-blog', blog_id)
+
